@@ -19,8 +19,8 @@
         require_once dirname( __FILE__ ) . '/vendor/autoload.php';
     }
 
-    use Inc\Base\Activate;
-    use Inc\Base\Deactivate;
+    use Testings\Base\Activate;
+    use Testings\Base\Deactivate;
 
     function activate_yaroslaw_tests_plugin() {
         Activate::activate();
@@ -33,6 +33,6 @@
     register_activation_hook( __FILE__, 'activate_yaroslaw_tests_plugin' );
     register_deactivation_hook( __FILE__, 'deactivate_yaroslaw_tests' );
 
-    if( class_exists( 'Inc\\Init' ) ) {
-        Inc\Init::register_services();
+    if( class_exists( 'Testings\\Init' ) ) {
+        Testings\Init::register_services();
     }

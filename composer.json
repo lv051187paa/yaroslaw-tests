@@ -1,12 +1,16 @@
 {
-    "name": "andy/yaroslaw-tests",
-    "authors": [
-        {
-            "name": "Andrii Pavliuk"
-        }
-    ],
-    "require": {},
-    "autoload": {
-        "psr-4": {"Inc\\": "./inc"}
+  "name": "andy/yaroslaw-tests",
+  "authors": [
+    {
+      "name": "Andrii Pavliuk"
     }
+  ],
+  "require": {
+
+  },
+  "autoload": {
+    "psr-4": {
+      "Testings\\": "./inc"
+    }
+  }
 }

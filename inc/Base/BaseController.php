@@ -3,7 +3,7 @@
  * @package Yaroslaw tests package
  */
 
-namespace Inc\Base;
+namespace Testings\Base;
 
 class BaseController {
     public $plugin_path;

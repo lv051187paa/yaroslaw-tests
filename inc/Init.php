@@ -2,7 +2,7 @@
 /**
  * @package Yaroslaw tests package
  */
-namespace Inc;
+namespace Testings;
 
 final class Init {
 

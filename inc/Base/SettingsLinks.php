@@ -2,9 +2,9 @@
 /**
  * @package Yaroslaw tests package
  */
-namespace Inc\Base;
+namespace Testings\Base;
 
-use \Inc\Base\BaseController;
+use \Testings\Base\BaseController;
 
 // Links for plugin main WP settings page
 
@@ -15,7 +15,7 @@ class SettingsLinks extends BaseController {
     }
 
     function settings_link( $links ) {
-        $settings_link = '<a href="admin.php?page=my_plugin_slug">Settings</a>';
+        $settings_link = '<a href="admin.php?page=yaroslaw_tests_settings">Settings</a>';
         array_push( $links, $settings_link );
 
         return $links;

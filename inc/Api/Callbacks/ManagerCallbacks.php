@@ -3,9 +3,9 @@
  * @package Yaroslaw tests package
  */
 
-namespace Inc\Api\Callbacks;
+namespace Testings\Api\Callbacks;
 
-use Inc\Base\BaseController;
+use Testings\Base\BaseController;
 
 // Callbacks for settings pages views (use templates folder for markups)
 

@@ -3,9 +3,9 @@
  * @package Yaroslaw tests package
  */
 
-namespace Inc\Base;
+namespace Testings\Base;
 
-use \Inc\Base\BaseController;
+use \Testings\Base\BaseController;
 
 class Enqueue extends BaseController {
     public function register() {

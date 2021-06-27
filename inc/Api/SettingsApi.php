@@ -3,7 +3,7 @@
  * @package Yaroslaw tests package
  */
 
-namespace Inc\Api;
+namespace Testings\Api;
 
 class SettingsApi
 {

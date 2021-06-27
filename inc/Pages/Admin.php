@@ -3,12 +3,12 @@
  * @package Yaroslaw tests package
  */
 
-namespace Inc\Pages;
+namespace Testings\Pages;
 
-use \Inc\Api\SettingsApi;
-use \Inc\Base\BaseController;
-use \Inc\Api\Callbacks\AdminCallbacks;
-use \Inc\Api\Callbacks\ManagerCallbacks;
+use \Testings\Api\SettingsApi;
+use \Testings\Base\BaseController;
+use \Testings\Api\Callbacks\AdminCallbacks;
+use \Testings\Api\Callbacks\ManagerCallbacks;
 
 /**
  *
@@ -42,7 +42,7 @@ class Admin extends BaseController
         $this->setFields();
 
         $this->settings->addPages( $this->pages )
-                       ->withSubpage( 'Dashboard' )
+                       ->withSubpage( 'Відповіді' )
                        ->addSubPages( $this->subpages )
                        ->register();
     }
@@ -51,7 +51,15 @@ class Admin extends BaseController
     {
         // Main plugin page
         $this->pages = [
-
+            [
+                'page_title' => 'Тести',
+                'menu_title' => 'Тести',
+                'capability' => 'manage_options',
+                'menu_slug' => 'yaroslaw_tests',
+                'icon_url' => 'dashicons-clipboard',
+                'callback' => array($this->callbacks, 'adminDashboard'),
+                'position' => 110
+            ]
         ];
     }
 
@@ -60,33 +68,29 @@ class Admin extends BaseController
         // Plugin subpages
 
         $this->subpages = [
-
+            [
+                'parent_slug' => 'yaroslaw_tests',
+                'page_title' => 'Керування тестами',
+                'menu_title' => 'Керування тестами',
+                'capability' => 'manage_options',
+                'menu_slug' => 'yaroslaw_tests_settings',
+                'callback' => array($this->callbacks, 'testsSettings'),
+            ],
+            [
+                'parent_slug' => 'yaroslaw_tests',
+                'page_title' => 'Списки питань',
+                'menu_title' => 'Списки питань',
+                'capability' => 'manage_options',
+                'menu_slug' => 'yaroslaw_tests_questions',
+                'callback' => array($this->callbacks, 'testsQuestions'),
+            ]
         ];
     }
 
     public function setSettings()
     {
         $args = [
-            [
-                'option_group' => 'my_test_plugin_settings',
-                'option_name' => 'cpt_manager',
-                'callback' => array($this->callbacks, 'checkboxSanitize')
-            ],
-            [
-                'option_group' => 'my_test_plugin_settings',
-                'option_name' => 'testimonial_manager',
-                'callback' => array($this->callbacks, 'checkboxSanitize')
-            ],
-            [
-                'option_group' => 'my_test_plugin_settings',
-                'option_name' => 'templates_manager',
-                'callback' => array($this->callbacks, 'checkboxSanitize')
-            ],
-            [
-                'option_group' => 'my_test_plugin_settings',
-                'option_name' => 'text_example',
-                'callback' => array($this->callbacks, 'myTestPluginOptionsGroup')
-            ]
+
         ];
 
         $this->settings->setSettings( $args );
