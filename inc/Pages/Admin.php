@@ -7,6 +7,7 @@ namespace Testings\Pages;
 
 use \Testings\Api\SettingsApi;
 use \Testings\Base\BaseController;
+use \Testings\Api\Database\TestsRepository;
 use \Testings\Api\Callbacks\AdminCallbacks;
 use \Testings\Api\Callbacks\ManagerCallbacks;
 
@@ -23,13 +24,21 @@ class Admin extends BaseController
 
     public $pages = array();
 
+    public $tests_repository;
+
     public function register()
     {
+        add_action( 'admin_post_save_test', array($this, 'createTestItemHandler') );
+        add_action( 'admin_post_remove_test', array($this, 'removeTestItemHandler') );
+        add_action( 'wp_ajax_edit_test', array($this, 'editTestItemHandler') );
+
         $this->settings = new SettingsApi();
 
         $this->callbacks_mngr = new ManagerCallbacks();
 
         $this->callbacks = new AdminCallbacks();
+
+        $this->tests_repository = new TestsRepository();
 
         $this->setPages();
 
@@ -101,6 +110,7 @@ class Admin extends BaseController
         // Sections for plugin pages
 
         $args = [
+
         ];
 
         $this->settings->setSections( $args );
@@ -110,10 +120,58 @@ class Admin extends BaseController
     {
         // Plugin pages fields
 
-        $args = array(
-
-        );
+        $args = array();
 
         $this->settings->setFields( $args );
     }
+
+	public function createTestItemHandler()
+    {
+        $success = $this->tests_repository->addNewTest();
+        if($success) {
+            status_header( 200 );
+            //request handlers should exit() when they complete their task
+            wp_redirect( $_SERVER["HTTP_REFERER"] );
+        }
+
+        // Add error handler
+
+        exit(  );
+    }
+
+	public function removeTestItemHandler()
+	{
+		$test_id = $_POST['id'];
+
+		$success = $this->tests_repository->removeSingleTest( $test_id );
+		if($success) {
+			status_header( 200 );
+			//request handlers should exit() when they complete their task
+			wp_redirect( $_SERVER["HTTP_REFERER"] );
+		}
+
+		// Add error handler
+
+		exit(  );
+	}
+
+	function editTestItemHandler()
+	{
+		$test_id = $_POST['testId'];
+		$test_name = $_POST['testName'];
+		$test_description = $_POST['testDescription'];
+		$is_test_active = $_POST['isTestActive'];
+
+		$success = $this->tests_repository->editSingleTest( $test_id, $test_name, $test_description, $is_test_active );
+		echo $success;
+//		if($success) {
+//			status_header( 200 );
+//			//request handlers should exit() when they complete their task
+//			wp_redirect( $_SERVER["HTTP_REFERER"] );
+//		}
+
+		// Add error handler
+
+//		exit(  );
+	}
 }

@@ -1,0 +1,24 @@
+button:focus, a:focus, .btn-outline-primary:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+textarea {
+    resize: none;
+}
+
+.wpbody-content {
+    padding-right: 15px;
+}
+
+.form-control {
+    border: 1px solid #8c8f94;
+}
+
+.btn.no-border {
+    border: none;
+}
+
+.btn-sm .material-icons {
+    font-size: 16px;
+}

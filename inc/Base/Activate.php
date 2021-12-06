@@ -3,10 +3,17 @@
  * @package Yaroslaw tests package
  */
 
- namespace Testings\Base;
+namespace Testings\Base;
 
- class Activate {
-     public static function activate() {
+use Testings\Api\Database\CreateTables;
+
+class Activate
+{
+    public static function activate()
+    {
+        CreateTables::createTestsTable();
         flush_rewrite_rules();
-     }
- }
+    }
+
+
+}
