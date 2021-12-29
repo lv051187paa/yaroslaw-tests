@@ -7,6 +7,18 @@ textarea {
     resize: none;
 }
 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    margin: 0;
+}
+
 .wpbody-content {
     padding-right: 15px;
 }
@@ -19,6 +31,59 @@ textarea {
     border: none;
 }
 
-.btn-sm .material-icons {
+.material-icons {
     font-size: 16px;
+}
+
+.form-group label {
+    vertical-align: inherit;
+}
+
+.form-group input[type="radio"], .form-group input[type="radio"]:focus, .form-group input[type="radio"]:active {
+    outline: inherit;
+    margin-bottom: 0;
+}
+
+.answers .badge {
+    border-radius: 0;
+}
+
+.answers {
+    border: 1px solid #8c8f94;
+}
+
+.answers .remove-answer {
+    border-left: 1px solid white;
+}
+
+.answers .single-answer {
+    cursor: pointer;
+}
+
+.answers .card-body {
+    max-width: 100%;
+    overflow: auto;
+}
+
+.editable {
+    display: inline-block;
+}
+
+.edit-handler{
+    display: none;
+}
+
+.editable + .edit-handler {
+    visibility: hidden;
+    cursor: pointer;
+    margin-left: 5px;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    color: #7a7a7a;
+    
+}
+
+table[data-list-type] td:hover .editable + .edit-handler {
+    visibility: initial;
 }

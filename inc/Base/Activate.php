@@ -11,7 +11,7 @@ class Activate
 {
     public static function activate()
     {
-        CreateTables::createTestsTable();
+        CreateTables::createDbTable();
         flush_rewrite_rules();
     }
 

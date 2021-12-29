@@ -27,4 +27,9 @@ class BaseController
         }
         return require_once("$this->plugin_path/templates/$filename.php");
     }
+
+	protected function get_current_admin_url(): string
+	{
+		return admin_url(sprintf(basename($_SERVER['REQUEST_URI'])));
+	}
 }
