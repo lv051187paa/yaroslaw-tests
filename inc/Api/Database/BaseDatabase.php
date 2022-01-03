@@ -17,7 +17,10 @@ class BaseDatabase
         $this->wpdb = $wpdb;
 
         $this->table_names = array(
-            "TESTS_TABLE" => $wpdb->prefix."yaroslaw_tests_list"
+            "TESTS_TABLE" => $wpdb->prefix."yaroslaw_tests_list",
+	        "TESTS_QUESTIONS" => $wpdb->prefix."yaroslaw_tests_questions",
+	        "TESTS_OPTIONS" => $wpdb->prefix."yaroslaw_tests_questions_options",
+	        "TESTS_QUESTION_TYPES" => $wpdb->prefix."yaroslaw_tests_question_types",
         );
     }
 }
