@@ -1,11 +1,12 @@
 <?php
 
-namespace Testings\Pages;
+namespace Testings\Admin\Pages;
 
-use \Testings\Api\Database\TestsRepository;
+use JetBrains\PhpStorm\NoReturn;
+use Testings\Api\Database\TestsRepository;
 
 class TestsSettings {
-	public $tests_repository;
+	public TestsRepository $tests_repository;
 
 	public function register()
 	{
@@ -16,7 +17,7 @@ class TestsSettings {
 		$this->tests_repository = new TestsRepository();
 	}
 
-	public function createTestItemHandler()
+	#[NoReturn] public function createTestItemHandler()
 	{
 		$test_description = $_POST['test_description'];
 		$test_name        = $_POST['test_name'];

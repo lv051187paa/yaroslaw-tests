@@ -1,11 +1,11 @@
 <?php
 
-namespace Testings\Pages;
+namespace Testings\Admin\Pages;
 
-use \Testings\Api\Database\OptionsRepository;
+use Testings\Api\Database\OptionsRepository;
 
 class TestQuestionOptions {
-	public $options_repository;
+	private OptionsRepository $options_repository;
 
 	public function register()
 	{
@@ -23,7 +23,7 @@ class TestQuestionOptions {
 		$option_id = $_POST['optionId'];
 		$result    = $this->options_repository->getSingleOption( $option_id );
 		foreach ( $result as &$row ) {
-			foreach ( $row as $key => &$value ) {
+			foreach ( $row as &$value ) {
 				if ( is_numeric( $value ) ) {
 					$value = (int) $value;
 				}

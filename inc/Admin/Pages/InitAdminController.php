@@ -3,31 +3,33 @@
  * @package Yaroslaw tests package
  */
 
-namespace Testings\Pages;
+namespace Testings\Admin\Pages;
 
-use \Testings\Api\SettingsApi;
-use \Testings\Base\BaseController;
-use \Testings\Api\Callbacks\AdminCallbacks;
-use \Testings\Api\Callbacks\ManagerCallbacks;
+use Testings\Api\Callbacks\AdminCallbacks;
+use Testings\Api\Callbacks\FrontEndCallbacks;
+use Testings\Api\SettingsApi;
+use Testings\Base\BaseController;
 
 /**
  *
  */
-class Admin extends BaseController {
-	public $settings;
+class InitAdminController extends BaseController {
+	public SettingsApi $settings;
 
-	public $callbacks;
+	public AdminCallbacks $callbacks;
 
-	public $callbacks_mngr;
+	public FrontEndCallbacks $callbacks_mngr;
 
-	public $pages = array();
+	public array $pages = array();
+
+	public array $subpages = array();
 
 
 	public function register()
 	{
 		$this->settings = new SettingsApi();
 
-		$this->callbacks_mngr = new ManagerCallbacks();
+		$this->callbacks_mngr = new FrontEndCallbacks();
 
 		$this->callbacks = new AdminCallbacks();
 

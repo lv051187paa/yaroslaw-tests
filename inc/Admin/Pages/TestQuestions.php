@@ -1,19 +1,20 @@
 <?php
 
-namespace Testings\Pages;
+namespace Testings\Admin\Pages;
 
-use \Testings\Api\Database\QuestionsRepository;
+use JetBrains\PhpStorm\NoReturn;
+use Testings\Api\Database\QuestionsRepository;
 
 class TestQuestions {
-	public $questions_repository;
+	public QuestionsRepository $questions_repository;
 
-	private $binary_options = [
+	private array $binary_options = [
 		[
-			"option_text" => "'Так'",
+			"option_text"  => "'Так'",
 			"option_value" => 1,
 		],
 		[
-			"option_text" => "'Ні'",
+			"option_text"  => "'Ні'",
 			"option_value" => 0,
 		]
 	];
@@ -47,23 +48,24 @@ class TestQuestions {
 		wp_send_json_success( $result, 200 );
 	}
 
-	public function getQuestionTypeList ()
+	public function getQuestionTypeList()
 	{
 		$result = $this->questions_repository->getQuestionTypeList();
 
 		wp_send_json_success( $result, 200 );
 	}
 
-	public function saveTestQuestionHandler()
+	#[NoReturn] public function saveTestQuestionHandler()
 	{
-		$question_text    = $_POST['question_text'];
-		$question_type_id = $_POST['question_type'];
-		$test_id          = (int) $_POST['test_id'];
+		$question_text        = $_POST['question_text'];
+		$question_description = $_POST['question_description'];
+		$question_type_id     = $_POST['question_type'];
+		$test_id              = (int) $_POST['test_id'];
 
-		$question_id = $this->questions_repository->addNewTestQuestion( $question_text, $question_type_id, $test_id );
+		$question_id = $this->questions_repository->addNewTestQuestion( $question_text, $question_description, $question_type_id, $test_id );
 
-		if($question_type_id == 3) {
-			do_action('add_bulk_options', $this->binary_options, $question_id );
+		if ( $question_type_id == 3 ) {
+			do_action( 'add_bulk_options', $this->binary_options, $question_id );
 		}
 		if ( $question_id ) {
 			status_header( 200 );
@@ -78,11 +80,12 @@ class TestQuestions {
 
 	public function editSingleQuestion()
 	{
-		$question_id = $_POST['questionId'];
-		$question_text = $_POST['questionName'];
-		$question_type = $_POST['questionTypeId'];
-		$is_active = $_POST['isQuestionActive'];
-		$result = $this->questions_repository->editSingleQuestion( $question_id, $question_text, $question_type, $is_active );
+		$question_id          = $_POST['questionId'];
+		$question_text        = $_POST['questionName'];
+		$question_description = $_POST['questionDescription'];
+		$question_type        = $_POST['questionTypeId'];
+		$is_active            = $_POST['isQuestionActive'];
+		$result               = $this->questions_repository->editSingleQuestion( $question_id, $question_text, $question_description, $question_type, $is_active );
 
 		wp_send_json_success( $result, 200 );
 	}
@@ -93,6 +96,6 @@ class TestQuestions {
 
 		$result = $this->questions_repository->removeSingleQuestion( $question_id );
 
-		wp_send_json_success($result, 200);
+		wp_send_json_success( $result, 200 );
 	}
 }

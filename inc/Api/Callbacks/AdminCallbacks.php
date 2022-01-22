@@ -13,6 +13,7 @@ use Testings\Api\Database\QuestionsRepository;
 
 class AdminCallbacks extends BaseController {
 	private $tests_repository;
+	private $questions_repository;
 
 	public function __construct()
 	{

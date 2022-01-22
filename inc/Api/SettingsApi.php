@@ -8,15 +8,15 @@ namespace Testings\Api;
 class SettingsApi
 {
 
-    public $admin_pages = array();
+    public array $admin_pages = array();
 
-    public $admin_subpages = array();
+    public array $admin_subpages = array();
 
-    public $settings = array();
+    public array $settings = array();
 
-    public $sections = array();
+    public array $sections = array();
 
-    public $fields = array();
+    public array $fields = array();
 
     public function register()
     {
@@ -29,35 +29,35 @@ class SettingsApi
         }
     }
 
-    public function addPages( array $pages )
+    public function addPages( array $pages ): static
     {
         $this->admin_pages = $pages;
 
         return $this;
     }
 
-    public function addSubPages( array $pages )
+    public function addSubPages( array $pages ): static
     {
         $this->admin_subpages = array_merge( $this->admin_subpages, $pages );
 
         return $this;
     }
 
-    public function setSettings( array $settings )
+    public function setSettings( array $settings ): static
     {
         $this->settings = $settings;
 
         return $this;
     }
 
-    public function setSections( array $sections )
+    public function setSections( array $sections ): static
     {
         $this->sections = $sections;
 
         return $this;
     }
 
-    public function setFields( array $fields )
+    public function setFields( array $fields ): static
     {
         $this->fields = $fields;
 
@@ -90,7 +90,7 @@ class SettingsApi
         }
     }
 
-    public function withSubpage( string $title = null )
+    public function withSubpage( string $title = null ): static
     {
         if (empty( $this->admin_pages )) {
             return $this;
@@ -118,17 +118,17 @@ class SettingsApi
     {
         foreach ( $this->settings as $setting ) {
             register_setting( $setting["option_group"], $setting["option_name"],
-                isset( $setting["callback"] ) ? $setting["callback"] : '' );
+	            $setting["callback"] ?? '' );
         }
 
         foreach ( $this->sections as $section ) {
             add_settings_section( $section["id"], $section["title"],
-                isset( $section["callback"] ) ? $section["callback"] : '', $section["page"] );
+	            $section["callback"] ?? '', $section["page"] );
         }
 
         foreach ( $this->fields as $field ) {
-            add_settings_field( $field["id"], $field["title"], isset( $field["callback"] ) ? $field["callback"] : '',
-                $field["page"], $field["section"], isset( $field["callback"] ) ? $field["callback"] : '' );
+            add_settings_field( $field["id"], $field["title"], $field["callback"] ?? '',
+                $field["page"], $field["section"], $field["callback"] ?? '' );
         }
     }
 }
