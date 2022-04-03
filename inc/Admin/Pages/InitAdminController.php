@@ -85,7 +85,7 @@ class InitAdminController extends BaseController {
 				'capability'  => 'manage_options',
 				'menu_slug'   => 'yaroslaw_tests_questions',
 				'callback'    => array( $this->callbacks, 'testsQuestions' ),
-			]
+			],
 		];
 	}
 

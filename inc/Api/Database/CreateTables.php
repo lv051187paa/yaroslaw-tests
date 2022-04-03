@@ -48,6 +48,14 @@ class CreateTables {
 	            question_id INTEGER NOT NULL,
 	            selected_options LONGTEXT NOT NULL,
 	            PRIMARY KEY (id)
+	        )",
+			$baseDb->table_names['TESTS_USERS'] => "(
+	            id INTEGER NOT NULL AUTO_INCREMENT,
+	            user_name TINYTEXT NOT NULL,
+	            email TINYTEXT NOT NULL,
+	            phone TINYTEXT NOT NULL,
+	            is_active INTEGER DEFAULT 1,
+	            PRIMARY KEY (id)
 	        )"
 		);
 	}
