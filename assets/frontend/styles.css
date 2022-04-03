@@ -1,0 +1,36 @@
+.test-description {
+    margin: 0;
+}
+
+.test-questions-count {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.question-list__item {
+    padding: 20px 0px;
+    border-bottom: 1px;
+}
+
+.question-list__item-title {
+    font-weight: 600;
+    margin: 0;
+}
+
+.question-list__item-title.error {
+    color: red;
+}
+
+p.question-list__item-description {
+    margin-top: 0;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.test-submit {
+    display: block;
+    margin-top: 30px;
+    padding: 15px;
+    border: solid 2px;
+    font-weight: 600;
+}

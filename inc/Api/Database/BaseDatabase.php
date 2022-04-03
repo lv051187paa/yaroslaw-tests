@@ -21,6 +21,7 @@ class BaseDatabase
 	        "TESTS_QUESTIONS" => $wpdb->prefix."yaroslaw_tests_questions",
 	        "TESTS_OPTIONS" => $wpdb->prefix."yaroslaw_tests_questions_options",
 	        "TESTS_QUESTION_TYPES" => $wpdb->prefix."yaroslaw_tests_question_types",
+	        "TESTS_ANSWERS" => $wpdb->prefix."yaroslaw_tests_tests_answers",
         );
     }
 }

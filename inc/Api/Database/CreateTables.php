@@ -5,11 +5,13 @@
 
 namespace Testings\Api\Database;
 
+use Testings\Api\Database\BaseDatabase;
+
 class CreateTables {
-	private static function getQueryList()
+	private static function getQueryList( BaseDatabase $baseDb ): array
 	{
 		return array(
-			'yaroslaw_tests_list'              => "(
+			$baseDb->table_names['TESTS_TABLE']          => "(
                  test_id INTEGER NOT NULL AUTO_INCREMENT,
                  test_name TEXT NOT NULL,
                  test_description TEXT NOT NULL,
@@ -17,7 +19,7 @@ class CreateTables {
                  archived INTEGER DEFAULT 0,
                  PRIMARY KEY (test_id)
              )",
-			'yaroslaw_tests_questions'         => "(
+			$baseDb->table_names['TESTS_QUESTIONS']      => "(
 	            id INTEGER NOT NULL AUTO_INCREMENT,
 	            question_text TEXT NOT NULL,
 	            question_type INTEGER NOT NULL,
@@ -26,7 +28,7 @@ class CreateTables {
 	            archived INTEGER DEFAULT 0,
 	            PRIMARY KEY (id)
 	        )",
-			'yaroslaw_tests_questions_options' => "(
+			$baseDb->table_names['TESTS_OPTIONS']        => "(
 	            id INTEGER NOT NULL AUTO_INCREMENT,
 	            option_text TEXT NOT NULL,
 	            option_value INTEGER NOT NULL,
@@ -34,29 +36,34 @@ class CreateTables {
 	            archived INTEGER DEFAULT 0,
 	            PRIMARY KEY (id)
 	        )",
-			'yaroslaw_tests_question_types'    => "(
+			$baseDb->table_names['TESTS_QUESTION_TYPES'] => "(
 	            id INTEGER NOT NULL AUTO_INCREMENT,
 	            type_name TEXT NOT NULL,
 	            selection_type TEXT NOT NULL,
+	            PRIMARY KEY (id)
+	        )",
+			$baseDb->table_names['TESTS_ANSWERS'] => "(
+	            id INTEGER NOT NULL AUTO_INCREMENT,
+	            test_id INTEGER NOT NULL,
+	            question_id INTEGER NOT NULL,
+	            selected_options LONGTEXT NOT NULL,
 	            PRIMARY KEY (id)
 	        )"
 		);
 	}
 
-	public static function createDbTable()
+	public static function createDbTables()
 	{
-		global $wpdb;
-
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		$baseDb = new BaseDatabase();
 
 		$sql             = "";
-		$charset_collate = $wpdb->get_charset_collate();
+		$charset_collate = $baseDb->wpdb->get_charset_collate();
 
-		foreach ( self::getQueryList() as $table_title => $query ) {
+		foreach ( self::getQueryList( $baseDb ) as $table_title => $query ) {
 			//* Create Db tables
-			$table_name = $wpdb->prefix . $table_title;
-			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
-				$sql .= "CREATE TABLE $table_name $query $charset_collate;";
+			if ( $baseDb->wpdb->get_var( "SHOW TABLES LIKE '$table_title'" ) != $table_title ) {
+				$sql .= "CREATE TABLE $table_title $query $charset_collate;";
 			}
 		}
 
@@ -64,15 +71,14 @@ class CreateTables {
 			dbDelta( $sql );
 		}
 
-		self::insertInitData();
-		self::runMigrations();
+		self::insertInitData( $baseDb );
 	}
 
-	private static function initDbData()
+	private static function initDbData( BaseDatabase $baseDb )
 	{
 		// first key should have unique value to check if this value exists in the table
 		return [
-			"yaroslaw_tests_question_types" => [
+			$baseDb->table_names['TESTS_QUESTION_TYPES'] => [
 				[
 					"type_name"      => "'Одна відповідь'",
 					"selection_type" => "'single'"
@@ -89,56 +95,28 @@ class CreateTables {
 		];
 	}
 
-	private static function insertInitData()
+	private static function insertInitData( BaseDatabase $baseDb )
 	{
-		global $wpdb;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 		$sql = "";
-		foreach ( self::initDbData() as $table_title => $data_list ) {
-			$table_name = $wpdb->prefix . $table_title;
+		foreach ( self::initDbData( $baseDb ) as $table_title => $data_list ) {
 			foreach ( $data_list as $fields ) {
 				$check_key        = array_key_first( $fields );
-				$row_check_query  = "SELECT EXISTS(SELECT * FROM $table_name WHERE `" . $check_key . "` = $fields[$check_key]) as `has_row`";
-				$row_check_result = $wpdb->get_results( $row_check_query, "ARRAY_A" );
+				$row_check_query  = "SELECT EXISTS(SELECT * FROM $table_title WHERE `" . $check_key . "` = $fields[$check_key]) as `has_row`";
+				$row_check_result = $baseDb->wpdb->get_results( $row_check_query, "ARRAY_A" );
 				$is_existing_row  = is_array( $row_check_result ) && $row_check_result[0]['has_row'];
 				if ( ! $is_existing_row ) {
 					$insert_keys   = implode( ', ', array_keys( $fields ) );
 					$insert_values = implode( ', ', array_values( $fields ) );
 
-					$sql .= "INSERT INTO $table_name ($insert_keys) VALUES ($insert_values);";
+					$sql .= "INSERT INTO $table_title ($insert_keys) VALUES ($insert_values);";
 				}
 			}
 		}
 
 		if ( $sql != "" ) {
 			dbDelta( $sql );
-		}
-	}
-
-	private static function runMigrations()
-	{
-		global $wpdb;
-
-		// add archived column for all tables
-		$tables = array_keys(self::getQueryList());
-		foreach ($tables as $table_name) {
-			$prefixed_table_name = $wpdb->prefix . $table_name;
-			$is_column_exist = (bool) $wpdb->query( "SHOW COLUMNS FROM $prefixed_table_name LIKE 'archived'" );
-			if(!$is_column_exist) {
-				$sql = "ALTER TABLE `$prefixed_table_name` ADD COLUMN archived INTEGER DEFAULT 0;";
-				$wpdb->query( $sql );
-			}
-		}
-
-		// remove deleted column for all tables
-		foreach ($tables as $table_name) {
-			$prefixed_table_name = $wpdb->prefix . $table_name;
-			$is_column_exist = (bool) $wpdb->query( "SHOW COLUMNS FROM $prefixed_table_name LIKE 'deleted'" );
-			if($is_column_exist) {
-				$sql = "ALTER TABLE `$prefixed_table_name` DROP COLUMN deleted;";
-				$wpdb->query( $sql );
-			}
 		}
 	}
 }

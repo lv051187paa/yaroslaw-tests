@@ -7,10 +7,10 @@ namespace Testings\Base;
 
 class BaseController
 {
-    public $plugin_path;
-    public $plugin_url;
-    public $plugin;
-    public $plugin_name;
+    public string $plugin_path;
+    public string $plugin_url;
+    public string $plugin;
+    public string $plugin_name;
 
     public function __construct()
     {
@@ -30,6 +30,6 @@ class BaseController
 
 	protected function get_current_admin_url(): string
 	{
-		return admin_url(sprintf(basename($_SERVER['REQUEST_URI'])));
+		return admin_url( basename($_SERVER['REQUEST_URI']) );
 	}
 }

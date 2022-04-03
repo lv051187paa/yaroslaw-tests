@@ -8,12 +8,14 @@ final class Init {
 
     public static function get_services() {
         return [
-            Pages\Admin::class,
-            Pages\TestsSettings::class,
-            Pages\TestQuestions::class,
-            Pages\TestQuestionOptions::class,
+            Admin\Pages\InitAdminController::class,
+            Admin\Pages\TestsSettings::class,
+            Admin\Pages\TestQuestions::class,
+            Admin\Pages\TestQuestionOptions::class,
+            Admin\Pages\TestAnswers::class,
             Base\Enqueue::class,
-            Base\SettingsLinks::class
+            Base\SettingsLinks::class,
+            Frontend\FrontEndController::class
         ];
     }
 
