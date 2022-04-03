@@ -5,7 +5,7 @@
     /*
     Plugin Name: Yaroslaw tests
     Description: Psychological tests aggregator plugin
-    Version: 1.0.0.3-alpha
+    Version: 1.0.0.4-alpha
     Author: Andy
     License: GPLv2
     Domain: Yaroslaw tests
