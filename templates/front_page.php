@@ -6,6 +6,10 @@
 		<?php
 	} else {
 		?>
+        <div class="user-info-title dNone">
+            <a class="user-info-title__change" href="#">Змінити користувача</a>
+            <h6>Привіт <span id="test-user-name"></span></h6>
+        </div>
         <h3 class="test-title">
 			<?php echo $test['test_name'] ?>
             <span class="test-questions-count">(Кількість питань: <?php echo count( $questions ); ?>)</span>
@@ -66,10 +70,28 @@
 					<?php
 				}
 				?>
-                <button type="submit" class="test-submit">Submit</button>
+                <button type="submit" class="test-submit">Завершити і відправити в обробку</button>
             </div>
         </form>
 		<?php
 	}
 	?>
+</div>
+<div id="login-form" class="modal">
+    <div class="user-submit-dialog__title">Привіт</div>
+    <form id="user-submit-form" class="user-submit-dialog">
+        <div class="form-input-container">
+            <input type="text" id="user-name" name="user-name" placeholder="Вкажіть ваше ім'я">
+        </div>
+        <div class="form-input-container">
+            <input type="text" id="user-phone" name="user-phone" placeholder="Вкажіть ваш телефон">
+        </div>
+        <div class="form-input-container">
+            <input type="text" id="user-email" name="user-email" placeholder="Вкажіть ваш e-mail">
+        </div>
+        <div class="flex">
+            <button type="submit" class="dNone" id="submit-user">Підтвердити</button>
+            <button type="button" class="dNone" id="cancel-submit-user">Закрити</button>
+        </div>
+    </form>
 </div>

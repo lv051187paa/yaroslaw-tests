@@ -22,7 +22,8 @@ class FrontEndCallbacks extends BaseController {
 	public function frontPage( $atts )
 	{
 		$test_id = (int) $atts['id'];
-		$ui_data = $this->uiService->getUserTestData( $test_id ); // add userId later
+		$user_id = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
+		$ui_data = $this->uiService->getUserTestData( $user_id, $test_id );
 
 		return $this->get_plugin_template( 'front_page', $ui_data );
 	}

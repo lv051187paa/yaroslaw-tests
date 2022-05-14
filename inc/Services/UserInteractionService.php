@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Yaroslaw tests package
+ */
 
 namespace Testings\Services;
 
@@ -20,18 +23,18 @@ class UserInteractionService {
 		$this->answers_repository   = new TestAnswersRepository();
 	}
 
-	#[ArrayShape( [ 'test' => "mixed", 'questions' => "array", 'answers' => "array" ] )] public function getUserTestData( int $test_id ): array
+	#[ArrayShape( [ 'test' => "mixed", 'questions' => "array", 'answers' => "array" ] )] public function getUserTestData( int|null $user_id, int $test_id ): array
 	{
 		$test                     = $this->tests_repository->getTestDetails( $test_id );
 		$test_question_list       = $this->questions_repository->getTestQuestions( $test_id );
-		$test_answers             = $this->answers_repository->getAnswerListByTest( $test_id ); // add filter by user later
+		$test_answers             = $this->answers_repository->getAnswerListByTestAndUserId( $user_id, $test_id );
 		$normalized_question_list = Normalizers::queryListNormalizer( $test_question_list );
 		$normalized_answer_list   = $this->formatAnswerList( $test_answers );
 
 		return array(
 			'test'      => $test['is_active'] == 1 ? $test : null,
 			'questions' => array_filter( $normalized_question_list, array( $this, 'getActiveItems' ) ),
-			'answers'   => $normalized_answer_list
+			'answers'   => isset($user_id) ? $normalized_answer_list : []
 		);
 	}
 

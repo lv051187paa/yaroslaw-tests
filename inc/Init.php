@@ -13,6 +13,7 @@ final class Init {
             Admin\Pages\TestQuestions::class,
             Admin\Pages\TestQuestionOptions::class,
             Admin\Pages\TestAnswers::class,
+            Admin\Pages\TestUsers::class,
             Base\Enqueue::class,
             Base\SettingsLinks::class,
             Frontend\FrontEndController::class
