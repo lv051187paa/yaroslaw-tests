@@ -39,20 +39,22 @@ $plugin_name = $plugin_data['Name'];
             <thead class="thead-dark">
             <th scope="col">Назва тесту</th>
             <th scope="col">Опис тесту</th>
+            <th scope="col">К-сть користувачів тесту</th>
+            <th scope="col">К-сть завершених</th>
             <th scope="col">Керування тестом</th>
             </thead>
             <tbody>
 
 			<?php
 			foreach ( $tests as $test ) {
-				$is_archived = (bool) $test['archived'];
+				$is_archived = (bool) $test->archived;
 				if ( ! $is_archived ) {
 					?>
-                    <tr data-id="<?php echo $test['test_id']; ?>">
+                    <tr data-id="<?php echo $test->test_id; ?>">
                         <td class="test-name">
                             <div class="editable" data-edit-type="text-link" data-editing="false">
-                                <a href="<?php echo admin_url( 'admin.php?page=yaroslaw_tests_questions&testId=' . $test['test_id'] ) ?>">
-									<?php echo $test['test_name']; ?>
+                                <a href="<?php echo admin_url( 'admin.php?page=yaroslaw_tests_questions&testId=' . $test->test_id ) ?>">
+									<?php echo $test->test_name; ?>
                                 </a>
                             </div>
                             <span class="edit-handler material-icons">
@@ -61,18 +63,32 @@ $plugin_name = $plugin_data['Name'];
                         </td>
                         <td class="test-description">
                             <div class="editable" data-edit-type="text" data-editing="false">
-								<?php echo $test['test_description']; ?>
+								<?php echo $test->test_description; ?>
                             </div>
                             <span class="edit-handler material-icons">
                             edit
                         </span>
                         </td>
+                        <td><?php echo $test->test_users ?></td>
+                        <td>
+                            <?php
+                                if($test->test_completed_counter > 0) {
+                                    ?>
+                                        <a href="<?php echo admin_url( 'admin.php?page=yaroslaw_tests&testId=' . $test->test_id ) ?>">
+                                            <?php echo $test->test_completed_counter ?>
+                                        </a>
+                                    <?php
+                                } else {
+	                                echo $test->test_completed_counter;
+                                }
+                            ?>
+                        </td>
                         <td>
                             <div class="d-flex form-inline">
                                 <div class="form-check justify-content-start">
                                     <input class="form-check-input test-activation" type="checkbox" value=""
-                                           id="checkbox_<?php echo $test['test_id']; ?>" <?php echo $test['is_active'] == 1 ? "checked" : "" ?>>
-                                    <label class="form-check-label" for="checkbox_<?php echo $test['test_id']; ?>">
+                                           id="checkbox_<?php echo $test->test_id; ?>" <?php echo $test->is_active == 1 ? "checked" : "" ?>>
+                                    <label class="form-check-label" for="checkbox_<?php echo $test->test_id; ?>">
                                         Тест активний
                                     </label>
                                 </div>

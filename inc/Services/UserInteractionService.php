@@ -23,9 +23,15 @@ class UserInteractionService {
 		$this->answers_repository   = new TestAnswersRepository();
 	}
 
-	#[ArrayShape( [ 'test' => "mixed", 'questions' => "array", 'answers' => "array" ] )] public function getUserTestData( int|null $user_id, int $test_id ): array
+	#[ArrayShape( [ 'test'      => "mixed",
+	                'questions' => "array",
+	                'answers'   => "array"
+	] )] public function getUserTestData( int|null $user_id, int $test_id ): array
 	{
-		$test                     = $this->tests_repository->getTestDetails( $test_id );
+		$test = $this->tests_repository->getTestDetails( $test_id );
+		if ( ! isset( $test ) ) {
+			return [];
+		}
 		$test_question_list       = $this->questions_repository->getTestQuestions( $test_id );
 		$test_answers             = $this->answers_repository->getAnswerListByTestAndUserId( $user_id, $test_id );
 		$normalized_question_list = Normalizers::queryListNormalizer( $test_question_list );
@@ -34,7 +40,7 @@ class UserInteractionService {
 		return array(
 			'test'      => $test['is_active'] == 1 ? $test : null,
 			'questions' => array_filter( $normalized_question_list, array( $this, 'getActiveItems' ) ),
-			'answers'   => isset($user_id) ? $normalized_answer_list : []
+			'answers'   => isset( $user_id ) ? $normalized_answer_list : []
 		);
 	}
 
@@ -46,10 +52,10 @@ class UserInteractionService {
 	private function formatAnswerList( array $answers ): array
 	{
 		$formatted_answer_list = array();
-		foreach ($answers as $answer_item) {
-			$question_id = $answer_item['question_id'];
-			$answers = unserialize($answer_item['selected_options']);
-			$formatted_answer_list[$question_id] = $answers;
+		foreach ( $answers as $answer_item ) {
+			$question_id                           = $answer_item['question_id'];
+			$answers                               = unserialize( $answer_item['selected_options'] );
+			$formatted_answer_list[ $question_id ] = $answers;
 		}
 
 		return $formatted_answer_list;

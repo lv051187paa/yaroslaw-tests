@@ -32,4 +32,12 @@ class BaseController
 	{
 		return admin_url( basename($_SERVER['REQUEST_URI']) );
 	}
+
+	protected function get_current_admin_url_no_query_params(): string
+	{
+		$current_page_url = admin_url( basename($_SERVER['REQUEST_URI']) );
+		$query_params_position = strpos($current_page_url, "&");
+
+		return $query_params_position ? substr($current_page_url, 0, $query_params_position) : $current_page_url;
+	}
 }

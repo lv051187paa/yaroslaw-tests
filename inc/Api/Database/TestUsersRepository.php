@@ -28,9 +28,9 @@ class TestUsersRepository extends BaseDatabase {
 		);
 
 		if ( $this->wpdb->last_error ) {
-			$is_duplicate = strpos(strtolower($this->wpdb->last_error), 'duplicate');
+			$is_duplicate = strpos( strtolower( $this->wpdb->last_error ), 'duplicate' );
 
-			if( $is_duplicate !== false ) {
+			if ( $is_duplicate !== false ) {
 				throw new Exception( 'Користувач з таким телефоном або поштою вже зареєстрований. Якщо це ви, то перевірте, чи вірно ви ввели свій телефон і адресу пошти', 500 );
 			}
 
@@ -110,5 +110,24 @@ class TestUsersRepository extends BaseDatabase {
 		}
 
 		return isset( $result ) ? new UserModel( $result ) : null;
+	}
+
+	public function getAllUsers()
+	{
+		$table_name = $this->table_names['TESTS_USERS'];
+		$query      = "SELECT * FROM $table_name";
+
+		$result = $this->wpdb->get_results( $query );
+
+		if ( $this->wpdb->last_error ) {
+
+			throw new Exception( $this->wpdb->last_error, 500 );
+		}
+
+		$get_user_model = function ( $user_data ) {
+			return new UserModel( $user_data );
+		};
+
+		return isset( $result ) ? array_map( $get_user_model, $result ) : null;
 	}
 }

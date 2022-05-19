@@ -3,6 +3,7 @@
 namespace Testings\Api\Database;
 
 use Exception;
+use Testings\Models\AdminAnswerDataModel;
 
 class TestAnswersRepository extends BaseDatabase {
 	public function addNewAnswer( int $user_id, int $test_id, int $question_id, string $option_id_list ): int
@@ -80,7 +81,24 @@ class TestAnswersRepository extends BaseDatabase {
 		);
 
 		return $result;
+	}
 
+	public function getAnswerListByUserId( int|null $user_id ): array|null
+	{
+		$table_name = $this->table_names['TESTS_ANSWERS'];
+		if ( ! isset( $user_id ) ) {
+			throw new Exception( "Невірні дані користувача", 400 );
+		}
+
+		$query  = "SELECT selected_options, question_id, test_id FROM $table_name WHERE user_id = %d";
+		$result = $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				$query,
+				$user_id,
+			)
+		);
+
+		return $result;
 	}
 
 	public function updateCompletionDate( int $user_id, int $test_id ): bool
@@ -102,18 +120,67 @@ class TestAnswersRepository extends BaseDatabase {
 		return (bool) $result;
 	}
 
-	public function getFinishedTestsByUser( int $user_id )
+	public function getAnswersByParams( int|null $user_id, int|null $test_id ): array
 	{
-		$table_name = $this->table_names['TESTS_ANSWERS'];
-		// select all answers
+
+		$answers_table   = $this->table_names['TESTS_ANSWERS'];
+		$tests_table     = $this->table_names['TESTS_TABLE'];
+		$questions_table = $this->table_names['TESTS_QUESTIONS'];
+		$options_table   = $this->table_names['TESTS_OPTIONS'];
+		$users_table   = $this->table_names['TESTS_USERS'];
+		$where_query = [];
+		$where_prepared = [];
+
+		if ( isset( $user_id ) ) {
+			$where_query[] = "a.user_id = %d";
+			$where_prepared[] = $user_id;
+		}
+
+		if ( isset( $test_id ) ) {
+			$where_query[] = "a.test_id = %d";
+			$where_prepared[] = $test_id;
+		}
+
+		if ( empty( $where_query ) ) {
+
+			$where_query_text = "WHERE a.completion_date IS NOT NULL ";
+		} else {
+			$where_query_text = " WHERE a.completion_date IS NOT NULL AND " . implode( ' AND ', $where_query );
+		}
+
 		$query = "
-				SELECT 
-					t.test_name, a.completion_date, u.user_name, a.selected_options, q.question_text, a.user_id as user_code
-				FROM `wp_yaroslaw_tests_tests_answers` a
-				JOIN wp_yaroslaw_tests_list t ON t.test_id = a.test_id
-				JOIN wp_yaroslaw_tests_users u ON u.id = a.user_id
-				JOIN wp_yaroslaw_tests_questions q ON q.id = a.question_id
-				WHERE user_id = 16 AND a.test_id = 12
-				# GROUP BY completion_date";
+			SELECT 
+		       	UUID() as uuid,
+			    t.test_name, 
+			    t.test_id, 
+			    a.completion_date,
+		       	u.user_name,
+			    CONCAT('[', GROUP_CONCAT(JSON_OBJECT(
+			        'id', o.id, 'option_text', o.option_text, 'option_value', o.option_value
+			    )), ']') as options,
+			    CONCAT('[', GROUP_CONCAT(DISTINCT JSON_OBJECT(
+			        'question', q.question_text, 'answer', a.selected_options
+			    )), ']') as answers_map
+			FROM $answers_table a
+			JOIN $tests_table t ON t.test_id = a.test_id
+			JOIN $questions_table q ON q.id = a.question_id
+			JOIN $options_table o ON o.question_id = q.id
+			JOIN $users_table u ON u.id = a.user_id
+			$where_query_text
+			GROUP BY a.completion_date
+			ORDER BY a.completion_date DESC
+		";
+
+		$result = $this->wpdb->get_results(
+			count($where_prepared) > 0 ?
+				$this->wpdb->prepare(
+					$query,
+					...$where_prepared
+				) : $query);
+
+		return isset( $result ) ? array_map( function ( $answer_data_item ) {
+
+			return new AdminAnswerDataModel( $answer_data_item );
+		}, $result ) : [];
 	}
 }
