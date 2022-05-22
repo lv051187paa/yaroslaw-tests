@@ -21,9 +21,9 @@
 						if ( ! empty( $tests ) ) {
 							foreach ( $tests as $test ) {
 								?>
-                                <a class="dropdown-item selectable-option" data-id="<?php echo $test['test_id'] ?>"
-                                   href="<?php echo $current_page_url . "&testId=" . $test['test_id'] ?>">
-									<?php echo $test['test_name'] ?>
+                                <a class="dropdown-item selectable-option" data-id="<?php echo $test->test_id ?>"
+                                   href="<?php echo $current_page_url . "&testId=" . $test->test_id ?>">
+									<?php echo $test->test_name ?>
                                 </a>
 								<?php
 							}

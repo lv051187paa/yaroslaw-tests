@@ -91,3 +91,17 @@ input[type=number] {
 table[data-list-type] td:hover .editable + .edit-handler {
     visibility: initial;
 }
+
+.answer-list {
+    width: 100%;
+}
+
+.answer-list__item {
+    max-width: unset;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.answer-list__item .card-header {
+    padding: 0;
+}
