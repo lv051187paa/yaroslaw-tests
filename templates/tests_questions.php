@@ -66,7 +66,7 @@
                                 <input type="radio"
                                        name="question_type"
                                        id="<?php echo "type" . $question_type['id'] ?>"
-                                       value="<?php echo $question_type['id']; ?>">
+                                       value="<?php echo $question_type['id']; ?>" required>
                                 <label class="form-check-label" for="<?php echo "type" . $question_type['id'] ?>">
 									<?php echo $question_type['type_name']; ?>
                                 </label>

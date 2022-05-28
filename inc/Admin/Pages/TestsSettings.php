@@ -2,11 +2,13 @@
 
 namespace Testings\Admin\Pages;
 
+use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Testings\Api\Database\TestsRepository;
+use WP_Error;
 
 class TestsSettings {
-	public TestsRepository $tests_repository;
+	private TestsRepository $tests_repository;
 
 	public function register()
 	{
@@ -15,23 +17,35 @@ class TestsSettings {
 		add_action( 'wp_ajax_edit_test', array( $this, 'editTestItemHandler' ) );
 
 		$this->tests_repository = new TestsRepository();
+		$this->errors = new WP_Error;
 	}
 
-	#[NoReturn] public function createTestItemHandler()
+	#[NoReturn] public function createTestItemHandler(): void
 	{
 		$test_description = $_POST['test_description'];
 		$test_name        = $_POST['test_name'];
 
-		$success = $this->tests_repository->addNewTest( $test_description, $test_name );
-		if ( $success ) {
-			status_header( 200 );
-			//request handlers should exit() when they complete their task
+		try {
+			$success = $this->tests_repository->addNewTest( $test_description, $test_name );
+			if ( $success ) {
+				delete_transient( 'tests_settings' );
+				status_header( 201 );
+				//request handlers should exit() when they complete their task
+				wp_redirect( wp_get_referer() );
+			}
+
+		} catch (Exception $exception) {
+			status_header($exception->getCode());
+			$errors = [
+				'test_name' => $exception->getMessage()
+			];
+
+			set_transient( 'tests_settings', $errors, 1 );
+
 			wp_redirect( $_SERVER["HTTP_REFERER"] );
+		} finally {
+			exit();
 		}
-
-		// Add error handler
-
-		exit();
 	}
 
 	public function removeTestItemHandler()

@@ -2,14 +2,17 @@
 
 namespace Testings\Api\Database;
 
-use Testings\Api\Database\BaseDatabase;
+use Exception;
 
 class TestsRepository extends BaseDatabase {
-	public function addNewTest( string $test_description, string $test_name )
+	/**
+	 * @throws Exception
+	 */
+	public function addNewTest( ?string $test_description, string $test_name )
 	{
 		$table_name = $this->table_names['TESTS_TABLE'];
 
-		$result = $this->wpdb->query(
+		$this->wpdb->query(
 			$this->wpdb->prepare(
 				"
 		INSERT INTO $table_name
@@ -22,18 +25,32 @@ class TestsRepository extends BaseDatabase {
 			)
 		);
 
-		return $result;
+		if ( $this->wpdb->last_error ) {
+
+			$is_duplicate = strpos( strtolower( $this->wpdb->last_error ), 'duplicate' );
+
+			if ( $is_duplicate !== false ) {
+				throw new Exception( "Тест з назвою \"$test_name\" вже існує", 500 );
+			}
+
+			throw new Exception( "Помилка при створенні тесту", 500 );
+		}
+
+		$id       = $this->wpdb->insert_id;
+		$new_test = $this->wpdb->get_row( "SELECT * FROM $table_name WHERE test_id = $id" );
+
+		return $new_test;
 	}
 
-	public function getTestsList( int|null $user_id = null ): array
+	public function getTestsList( ?int $user_id = null ): array
 	{
-		$test_table = $this->table_names['TESTS_TABLE'];
-		$answers_table = $this->table_names['TESTS_ANSWERS'];
-		$where_query = [];
+		$test_table     = $this->table_names['TESTS_TABLE'];
+		$answers_table  = $this->table_names['TESTS_ANSWERS'];
+		$where_query    = [];
 		$where_prepared = [];
 
 		if ( isset( $user_id ) ) {
-			$where_query[] = "a.user_id = %d";
+			$where_query[]    = "a.user_id = %d";
 			$where_prepared[] = $user_id;
 		}
 
@@ -55,8 +72,7 @@ class TestsRepository extends BaseDatabase {
 		";
 
 
-
-		return $this->wpdb->get_results( count($where_prepared) === 0 ? $query :
+		return $this->wpdb->get_results( count( $where_prepared ) === 0 ? $query :
 			$this->wpdb->prepare(
 				$query,
 				...$where_prepared
@@ -94,7 +110,7 @@ class TestsRepository extends BaseDatabase {
 		], [ 'test_id' => (int) $test_id ], [ '%d' ], [ '%d' ] );
 	}
 
-	public function getTestUsersCount(int $test_id)
+	public function getTestUsersCount( int $test_id )
 	{
 		$table_name = $this->table_names['TESTS_TABLE'];
 

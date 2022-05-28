@@ -6,18 +6,7 @@ use JetBrains\PhpStorm\NoReturn;
 use Testings\Api\Database\QuestionsRepository;
 
 class TestQuestions {
-	public QuestionsRepository $questions_repository;
-
-	private array $binary_options = [
-		[
-			"option_text"  => "'Так'",
-			"option_value" => 1,
-		],
-		[
-			"option_text"  => "'Ні'",
-			"option_value" => 0,
-		]
-	];
+	private QuestionsRepository $questions_repository;
 
 	public function register()
 	{
@@ -62,12 +51,9 @@ class TestQuestions {
 		$question_type_id     = $_POST['question_type'];
 		$test_id              = (int) $_POST['test_id'];
 
-		$question_id = $this->questions_repository->addNewTestQuestion( $question_text, $question_description, $question_type_id, $test_id );
+		$question = $this->questions_repository->addNewTestQuestion( $question_text, $question_description, $question_type_id, $test_id );
 
-		if ( $question_type_id == 3 ) {
-			do_action( 'add_bulk_options', $this->binary_options, $question_id );
-		}
-		if ( $question_id ) {
+		if ( isset($question) ) {
 			status_header( 200 );
 			//request handlers should exit() when they complete their task
 			wp_redirect( $_SERVER["HTTP_REFERER"] );

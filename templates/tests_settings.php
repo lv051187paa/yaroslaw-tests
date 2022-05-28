@@ -6,6 +6,19 @@ $plugin_name = $plugin_data['Name'];
 <div class="pr-3">
     <h1>Керування тестами</h1>
     <div>
+	    <?php
+	    if ( isset($errors) && $errors !== false ) {
+		    ?>
+                <div class="alert alert-danger" role="alert">
+                    <?php
+                        foreach ($errors as $error_message) {
+                            echo $error_message . ";";
+                        }
+                    ?>
+                </div>
+		    <?php
+	    }
+	    ?>
         <p>
             Тут можна буде додавати, відключати, видаляти тести і проводити якісь інші дії
         </p>
@@ -18,6 +31,7 @@ $plugin_name = $plugin_data['Name'];
                 <label class="col-sm-1 col-form-label" for="new-test_name">Назва тесту</label>
                 <div class="col-sm-11">
                     <input type="text" name="test_name" class="form-control" id="new-test_name" required>
+
                 </div>
             </div>
             <div class="form-group row">
@@ -27,7 +41,7 @@ $plugin_name = $plugin_data['Name'];
                           rows="3"></textarea>
                 </div>
             </div>
-            <button type="submit" class="btn btn-outline-primary">Додати новий тест</button>
+            <button type="submit" class="btn btn-outline-primary" id="submit-new-test">Додати новий тест</button>
         </form>
     </div>
 

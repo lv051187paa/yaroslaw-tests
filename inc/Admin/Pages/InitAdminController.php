@@ -86,6 +86,14 @@ class InitAdminController extends BaseController {
 				'menu_slug'   => 'yaroslaw_tests_questions',
 				'callback'    => array( $this->callbacks, 'testsQuestions' ),
 			],
+			[
+				'parent_slug' => 'yaroslaw_tests',
+				'page_title'  => 'Імпорт',
+				'menu_title'  => 'Імпорт',
+				'capability'  => 'manage_options',
+				'menu_slug'   => 'yaroslaw_tests_generation',
+				'callback'    => array( $this->callbacks, 'testsGeneration' ),
+			],
 		];
 	}
 

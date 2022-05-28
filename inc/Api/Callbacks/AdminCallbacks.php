@@ -37,7 +37,7 @@ class AdminCallbacks extends BaseController {
 		$users              = $this->users_repository->getAllUsers();
 		$tests              = $this->tests_repository->getTestsList( $selected_user_id );
 		$current_test_index = array_search( $selected_test_id, array_column( $tests, 'test_id' ) );
-		$selected_test_name = is_numeric( $current_test_index) ? $tests[ $current_test_index ]->test_name : "";
+		$selected_test_name = is_numeric( $current_test_index ) ? $tests[ $current_test_index ]->test_name : "";
 
 		$current_page       = $this->get_current_admin_url_no_query_params();
 		$current_user_index = array_search( $selected_user_id, array_column( $users, 'id' ) );
@@ -59,10 +59,12 @@ class AdminCallbacks extends BaseController {
 
 	public function testsSettings()
 	{
-		$tests = $this->tests_repository->getTestsList();
+		$tests  = $this->tests_repository->getTestsList();
+		$errors = get_transient( 'tests_settings' );
 
 		return $this->get_plugin_template( 'tests_settings', array(
-			'tests' => $tests,
+			'tests'  => $tests,
+			'errors' => $errors
 		) );
 	}
 
@@ -84,5 +86,10 @@ class AdminCallbacks extends BaseController {
 			'current_test_id'   => $selected_test_id,
 			'current_test_name' => $selected_test_name,
 		) );
+	}
+
+	public function testsGeneration()
+	{
+		return $this->get_plugin_template( 'tests_import' );
 	}
 }
