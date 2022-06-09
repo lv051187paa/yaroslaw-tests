@@ -17,6 +17,7 @@ class Migrations {
 		self::addCompleationDateForAnswersTable( $baseDb );
 		self::addUserIdForAnswersTable( $baseDb );
 		self::setUSerPhoneUniqueConstraint( $baseDb );
+		self::setTestNameUniqueConstraint( $baseDb );
 	}
 
 	private static function addArchivedColumn( BaseDatabase $baseDb )
@@ -105,6 +106,20 @@ class Migrations {
 			$is_column_unique = (bool) $baseDb->wpdb->query( "SHOW INDEXES FROM $table_name WHERE Key_name = 'phone'" );
 			if ( !$is_column_unique ) {
 				$sql = "ALTER TABLE `$table_name` ADD CONSTRAINT UNIQUE (phone);";
+				$baseDb->wpdb->query( $sql );
+			}
+		}
+	}
+
+	private static function setTestNameUniqueConstraint( BaseDatabase $baseDb )
+	{
+		// set user phone unique constraint
+		$table_name      = $baseDb->table_names['TESTS_TABLE'];
+		$is_column_exist = (bool) $baseDb->wpdb->query( "SHOW COLUMNS FROM $table_name LIKE 'test_name'" );
+		if ( $is_column_exist ) {
+			$is_column_unique = (bool) $baseDb->wpdb->query( "SHOW INDEXES FROM $table_name WHERE Key_name = 'test_name'" );
+			if ( !$is_column_unique ) {
+				$sql = "ALTER TABLE `$table_name` ADD CONSTRAINT UNIQUE (test_name);";
 				$baseDb->wpdb->query( $sql );
 			}
 		}

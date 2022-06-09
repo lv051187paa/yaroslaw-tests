@@ -395,3 +395,30 @@ const optionEditHandler = (optionId) => {
             $('#form-option-value').val(response.data.option_value);
         });
 };
+
+/* ======================= test import ======================= */
+
+$('#import-test').click(function () {
+    try {
+        const value = $(this).closest('form').find('textarea').val();
+
+        $(this).closest('form').find('textarea').removeClass("is-invalid");
+        submitAjaxRequest({
+                action: 'generate_test',
+                test_struture: JSON.parse(value),
+            },
+            (response) => {
+                const testId = response.data.test_id;
+                location.assign(`/wp-admin/admin.php?page=yaroslaw_tests_questions&testId=${testId}`);
+            },
+            (error) => {
+                console.error(error);
+                $(this).closest('form').find('textarea').addClass("is-invalid");
+                $('.test-struture-validation-text').text(error.responseJSON.data);
+            });
+    } catch (error) {
+        console.error(error);
+        $(this).closest('form').find('textarea').addClass("is-invalid");
+        $('.test-struture-validation-text').text("Помилка в структурі тесту");
+    }
+})

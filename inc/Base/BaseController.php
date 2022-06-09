@@ -20,7 +20,7 @@ class BaseController
         $this->plugin_name = basename( plugin_dir_path(  dirname( __FILE__ , 2 ) ) );
     }
 
-    protected function get_plugin_template( $filename, array $args)
+    protected function get_plugin_template( $filename, array $args = [])
     {
         foreach ($args as $key => $value) {
             $$key = $value;

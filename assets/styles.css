@@ -35,6 +35,10 @@ input[type=number] {
     font-size: 16px;
 }
 
+.w100 {
+    width: 100%;
+}
+
 .form-group label {
     vertical-align: inherit;
 }

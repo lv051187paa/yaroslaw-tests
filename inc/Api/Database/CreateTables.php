@@ -94,10 +94,6 @@ class CreateTables {
 				[
 					"type_name"      => "'Декілька відповідей'",
 					"selection_type" => "'multiple'"
-				],
-				[
-					"type_name"      => "'Так/Ні'",
-					"selection_type" => "'single'"
 				]
 			]
 		];

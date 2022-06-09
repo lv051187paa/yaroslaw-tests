@@ -2,7 +2,7 @@
 
 namespace Testings\Api\Database;
 
-use Testings\Api\Database\BaseDatabase;
+use Exception;
 
 class OptionsRepository extends BaseDatabase {
 	public function getSingleOption( int $option_id )
@@ -36,19 +36,28 @@ class OptionsRepository extends BaseDatabase {
 		return $this->wpdb->insert_id;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function addBulkOptions( array $options_list, int $question_id )
 	{
 		$table_name = (string) $this->table_names['TESTS_OPTIONS'];
 		$query_options = [];
 		foreach ($options_list as $option_data) {
-			$query_options[] = "( " . implode( ',', $option_data ) . ", $question_id )";
+			$query_options[] = "( " . implode( ',', (array) $option_data ) . ", $question_id )";
 		}
 		$query_options_text = implode(",", $query_options);
 		$sql = "INSERT INTO $table_name(option_text, option_value, question_id)
 				VALUES
 				   $query_options_text";
 
-		$result = $this->wpdb->query($sql);
+
+		$this->wpdb->query($sql);
+
+		if ( $this->wpdb->last_error ) {
+
+			throw new Exception( "Помилка при створенні варіантів відповіді", 500 );
+		}
 	}
 
 	public function editSingleOption( int $option_id, string $option_text, int $option_value )

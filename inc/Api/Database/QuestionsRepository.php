@@ -2,7 +2,7 @@
 
 namespace Testings\Api\Database;
 
-use Testings\Api\Database\BaseDatabase;
+use Exception;
 
 class QuestionsRepository extends BaseDatabase {
 	public function getQuestionTypeList()
@@ -13,7 +13,29 @@ class QuestionsRepository extends BaseDatabase {
 		return $this->wpdb->get_results( "SELECT * FROM $table_name", 'ARRAY_A' );
 	}
 
-	public function getTestQuestions( int $test_id )
+	/**
+	 * @throws Exception
+	 */
+	public function getQuestionTypeIdByValue( string $value ): array|object
+	{
+		$table_name = $this->table_names['TESTS_QUESTION_TYPES'];
+		$query      = "SELECT * FROM $table_name WHERE selection_type = %s";
+
+		$result = $this->wpdb->get_row( $this->wpdb->prepare( $query, $value ) );
+
+		if ( ! isset( $result ) ) {
+			throw new Exception( "Невірно вказаний тип одного з питань. Тип може бути в двох варіантах \"single\" або \"multiple\"", 400 );
+		}
+
+		if ( $this->wpdb->last_error ) {
+
+			throw new Exception( "Помилка в типі одного з питань", 500 );
+		}
+
+		return $result;
+	}
+
+	public function getTestQuestions( int $test_id ): object|array|null
 	{
 		$table_name                = $this->table_names['TESTS_QUESTIONS'];
 		$question_types_table_name = $this->table_names['TESTS_QUESTION_TYPES'];
@@ -43,11 +65,11 @@ class QuestionsRepository extends BaseDatabase {
 		return $this->wpdb->get_results( $request, 'ARRAY_A' );
 	}
 
-	public function addNewTestQuestion( string $question_text, string $question_description, int $question_type_id, int $test_id )
+	public function addNewTestQuestion( string $question_text, ?string $question_description, int $question_type_id, int $test_id )
 	{
 		$table_name = $this->table_names['TESTS_QUESTIONS'];
 
-		$result = $this->wpdb->query(
+		$this->wpdb->query(
 			$this->wpdb->prepare(
 				"
 		INSERT INTO $table_name
@@ -62,7 +84,16 @@ class QuestionsRepository extends BaseDatabase {
 			)
 		);
 
-		return $this->wpdb->insert_id;
+		if ( $this->wpdb->last_error ) {
+
+			throw new Exception( "Помилка при створенні одного з питань", 500 );
+		}
+
+		$id          = $this->wpdb->insert_id;
+		$new_quesion = $this->wpdb->get_row( "SELECT * FROM $table_name WHERE id = $id" );
+
+		return $new_quesion;
+
 	}
 
 	public function editSingleQuestion( int $question_id, string $question_text, string $question_description, int $question_type, int $is_active )
@@ -70,10 +101,10 @@ class QuestionsRepository extends BaseDatabase {
 		$table_name = $this->table_names['TESTS_QUESTIONS'];
 
 		return $this->wpdb->update( $table_name, [
-			'question_text'  => $question_text,
-			'question_description'  => $question_description,
-			'question_type' => $question_type,
-			'is_active' => $is_active,
+			'question_text'        => $question_text,
+			'question_description' => $question_description,
+			'question_type'        => $question_type,
+			'is_active'            => $is_active,
 		], [ 'id' => (int) $question_id ], [ '%s', '%s', '%d', '%d' ], [ '%d' ] );
 	}
 
@@ -82,7 +113,7 @@ class QuestionsRepository extends BaseDatabase {
 		$table_name = $this->table_names['TESTS_QUESTIONS'];
 
 		return $this->wpdb->update( $table_name, [
-			'archived'  => 1,
+			'archived' => 1,
 		], [ 'id' => (int) $question_id ], [ '%d' ], [ '%d' ] );
 	}
 }

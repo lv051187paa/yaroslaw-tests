@@ -14,6 +14,7 @@ final class Init {
             Admin\Pages\TestQuestionOptions::class,
             Admin\Pages\TestAnswers::class,
             Admin\Pages\TestUsers::class,
+            Admin\Pages\TestImportController::class,
             Base\Enqueue::class,
             Base\SettingsLinks::class,
             Frontend\FrontEndController::class
