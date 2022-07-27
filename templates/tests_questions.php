@@ -44,10 +44,17 @@
                 <form method="post" action="<?php echo admin_url( 'admin-post.php' ) ?>" id="question-form">
                     <input type="hidden" name="action" value="save_question">
                     <input type="hidden" name="test_id" value="<?php echo $current_test_id; ?>">
+                    <input type="hidden" name="question_count" value="<?php echo count( $question_list ); ?>">
                     <div class="form-group col-sm-12">
                         <label class="col-form-label" for="new-question_name">Текст питання</label>
                         <div>
                             <input type="text" name="question_text" class="form-control" id="new-question_name" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-12">
+                        <label class="col-form-label" for="new-question_name">Ідентифікатор питання</label>
+                        <div>
+                            <input type="text" name="question_group" class="form-control" id="new-question_group">
                         </div>
                     </div>
                     <div class="form-group col-sm-12">
@@ -88,6 +95,7 @@
                     <thead class="thead-dark">
                     <th scope="col">Питання</th>
                     <th scope="col">Опис питання</th>
+                    <th scope="col">Група питання</th>
                     <th scope="col">Тип відповіді</th>
                     <th scope="col">Варіанти відповіді</th>
                     <th scope="col">Керування питанням</th>
@@ -122,6 +130,14 @@
                                             edit
                                         </span>
                                 </td>
+                                <td class="question-group">
+                                    <div class="editable" data-edit-type="text" data-editing="false">
+			                            <?php echo $question['question_group'] ?>
+                                    </div>
+                                    <span class="edit-handler material-icons">
+                                    edit
+                                </span>
+                                </td>
                                 <td class="question-type">
                                     <div class="editable" data-edit-type="options-question-types" data-editing="false">
 										<?php echo $question['type_name'] ?>
@@ -130,7 +146,7 @@
                                     edit
                                 </span>
                                 </td>
-                                <td>
+                                <td class="options">
                                     <div class="card answers py-0 px-2 flex-row mt-0">
                                         <div class="card-body p-1 d-flex">
 											<?php
@@ -160,7 +176,7 @@
                                         </button>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="actions">
                                     <div class="d-flex form-inline">
                                         <div class="justify-content-start form-check">
                                             <input class="form-check-input question-activation" type="checkbox" value=""

@@ -48,12 +48,13 @@ class TestQuestions {
 	{
 		$question_text        = $_POST['question_text'];
 		$question_description = $_POST['question_description'];
+		$question_group       = $_POST['question_group'] ?: (int)$_POST['question_count'] + 1;
 		$question_type_id     = $_POST['question_type'];
 		$test_id              = (int) $_POST['test_id'];
 
-		$question = $this->questions_repository->addNewTestQuestion( $question_text, $question_description, $question_type_id, $test_id );
+		$question = $this->questions_repository->addNewTestQuestion( $question_text, $question_description, $question_type_id, $test_id, $question_group );
 
-		if ( isset($question) ) {
+		if ( isset( $question ) ) {
 			status_header( 200 );
 			//request handlers should exit() when they complete their task
 			wp_redirect( $_SERVER["HTTP_REFERER"] );
@@ -69,9 +70,10 @@ class TestQuestions {
 		$question_id          = $_POST['questionId'];
 		$question_text        = $_POST['questionName'];
 		$question_description = $_POST['questionDescription'];
+		$question_group       = $_POST['questionGroup'];
 		$question_type        = $_POST['questionTypeId'];
 		$is_active            = $_POST['isQuestionActive'];
-		$result               = $this->questions_repository->editSingleQuestion( $question_id, $question_text, $question_description, $question_type, $is_active );
+		$result               = $this->questions_repository->editSingleQuestion( $question_id, $question_text, $question_description, $question_type, $is_active, $question_group );
 
 		wp_send_json_success( $result, 200 );
 	}

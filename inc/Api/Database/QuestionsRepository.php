@@ -44,6 +44,7 @@ class QuestionsRepository extends BaseDatabase {
 										q.id, 
 									    q.question_text, 
 									    q.question_type, 
+									    q.question_group, 
 									    q.is_active, 
 									    q.test_id, 
                                         q.archived,
@@ -65,7 +66,7 @@ class QuestionsRepository extends BaseDatabase {
 		return $this->wpdb->get_results( $request, 'ARRAY_A' );
 	}
 
-	public function addNewTestQuestion( string $question_text, ?string $question_description, int $question_type_id, int $test_id )
+	public function addNewTestQuestion( string $question_text, ?string $question_description, int $question_type_id, int $test_id, string $question_group )
 	{
 		$table_name = $this->table_names['TESTS_QUESTIONS'];
 
@@ -73,14 +74,15 @@ class QuestionsRepository extends BaseDatabase {
 			$this->wpdb->prepare(
 				"
 		INSERT INTO $table_name
-		( question_text, question_description, question_type, is_active, test_id )
-		VALUES ( %s, %s, %d, %d, %d )
+		( question_text, question_description, question_type, is_active, test_id, question_group )
+		VALUES ( %s, %s, %d, %d, %d, %s )
 		",
 				$question_text,
 				$question_description,
 				$question_type_id,
 				1,
-				$test_id
+				$test_id,
+				$question_group
 			)
 		);
 
@@ -96,7 +98,7 @@ class QuestionsRepository extends BaseDatabase {
 
 	}
 
-	public function editSingleQuestion( int $question_id, string $question_text, string $question_description, int $question_type, int $is_active )
+	public function editSingleQuestion( int $question_id, string $question_text, string $question_description, int $question_type, int $is_active, string $question_group )
 	{
 		$table_name = $this->table_names['TESTS_QUESTIONS'];
 
@@ -104,8 +106,9 @@ class QuestionsRepository extends BaseDatabase {
 			'question_text'        => $question_text,
 			'question_description' => $question_description,
 			'question_type'        => $question_type,
+			'question_group'       => $question_group,
 			'is_active'            => $is_active,
-		], [ 'id' => (int) $question_id ], [ '%s', '%s', '%d', '%d' ], [ '%d' ] );
+		], [ 'id' => (int) $question_id ], [ '%s', '%s', '%d', '%d', '%s' ], [ '%d' ] );
 	}
 
 	public function removeSingleQuestion( int $question_id )

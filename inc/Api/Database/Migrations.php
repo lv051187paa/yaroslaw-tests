@@ -18,6 +18,7 @@ class Migrations {
 		self::addUserIdForAnswersTable( $baseDb );
 		self::setUSerPhoneUniqueConstraint( $baseDb );
 		self::setTestNameUniqueConstraint( $baseDb );
+		self::addQuestionGroupForQuestionsTable( $baseDb );
 	}
 
 	private static function addArchivedColumn( BaseDatabase $baseDb )
@@ -122,6 +123,17 @@ class Migrations {
 				$sql = "ALTER TABLE `$table_name` ADD CONSTRAINT UNIQUE (test_name);";
 				$baseDb->wpdb->query( $sql );
 			}
+		}
+	}
+
+	private static function addQuestionGroupForQuestionsTable( BaseDatabase $baseDb )
+	{
+		// add question_group column
+		$table_name      = $baseDb->table_names['TESTS_QUESTIONS'];
+		$is_column_exist = (bool) $baseDb->wpdb->query( "SHOW COLUMNS FROM $table_name LIKE 'question_group'" );
+		if ( ! $is_column_exist ) {
+			$sql = "ALTER TABLE `$table_name` ADD COLUMN question_group TEXT DEFAULT '';";
+			$baseDb->wpdb->query( $sql );
 		}
 	}
 }

@@ -14,6 +14,8 @@ class TestQuestionGenerationModel {
 
 	public array $question_option_list;
 
+	public ?string $name;
+
 	private ?int $rate_min;
 
 	private ?int $rate_max;
@@ -27,17 +29,18 @@ class TestQuestionGenerationModel {
 	 */
 	public function __construct( $question_response )
 	{
-		if(!isset($question_response->question_text)) {
-			throw new Exception("Помилка при створенні одного з питань. Відсутній текст запитання". 400);
+		if ( ! isset( $question_response->question_text ) ) {
+			throw new Exception( "Помилка при створенні одного з питань. Відсутній текст запитання" . 400 );
 		}
 
-		if(!isset($question_response->question_type)) {
-			throw new Exception("Помилка при створенні питання \"$question_response->question_text\". Не вказаний тип питання", 400);
+		if ( ! isset( $question_response->question_type ) ) {
+			throw new Exception( "Помилка при створенні питання \"$question_response->question_text\". Не вказаний тип питання", 400 );
 		}
 
 		$this->question_text        = $question_response->question_text;
 		$this->question_description = $question_response->question_description;
 		$this->question_type        = $question_response->question_type;
+		$this->name                 = $question_response->name;
 		$this->rate_min             = $question_response->rate_min;
 		$this->rate_max             = $question_response->rate_max;
 		$this->min_rate_description = $question_response->min_rate_description;
@@ -58,7 +61,7 @@ class TestQuestionGenerationModel {
 	{
 		$generated_option_list = [];
 		foreach ( $option_list as $option ) {
-			$option->option_text = "'$option->option_text'";
+			$option->option_text     = "'$option->option_text'";
 			$generated_option_list[] = new OptionModel( $option );
 		}
 
