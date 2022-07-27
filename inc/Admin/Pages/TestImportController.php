@@ -33,11 +33,14 @@ class TestImportController {
 			$generated_test = new TestGenerationModel( json_encode( $_POST['test_struture'] ) );
 			$test = $this->tests_repository->addNewTest( $generated_test->test_description, $generated_test->test_name );
 			if ( isset( $test ) && $test->test_id ) {
+				$counter = 0;
 
 				/* @var $test_question TestQuestionGenerationModel */
 				foreach ( $generated_test->question_list as $test_question ) {
+					$counter++;
+					$question_group = $test_question->name ?: (string)$counter;
 					$question_type = $this->questions_repository->getQuestionTypeIdByValue( $test_question->question_type );
-					$question      = $this->questions_repository->addNewTestQuestion( $test_question->question_text, $test_question->question_description, (int) $question_type->id, $test->test_id );
+					$question      = $this->questions_repository->addNewTestQuestion( $test_question->question_text, $test_question->question_description, (int) $question_type->id, $test->test_id, $question_group );
 
 					if ( isset( $question ) && $question->id ) {
 						$this->options_repository->addBulkOptions( $test_question->question_option_list, (int) $question->id );

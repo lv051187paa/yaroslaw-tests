@@ -272,6 +272,7 @@ const editQuestionHandler = ($target) => {
     const questionTypes = JSON.parse(questionTypeListStr);
     const questionName = questionRow.find('.question-name div').text().trim();
     const questionDescription = questionRow.find('.question-description div').text().trim();
+    const questionGroup = questionRow.find('.question-group div').text().trim();
     const questionTypeName = questionRow.find('.question-type div').text().trim();
     const isQuestionActive = questionRow.find('.question-activation').prop('checked');
     const questionType = questionTypes.find(questionType => questionType.type_name === questionTypeName);
@@ -281,6 +282,7 @@ const editQuestionHandler = ($target) => {
         questionId,
         questionName,
         questionDescription,
+        questionGroup,
         questionTypeId: questionType.id,
         isQuestionActive: Number(isQuestionActive),
     });

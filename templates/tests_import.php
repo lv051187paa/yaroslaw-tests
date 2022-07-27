@@ -26,6 +26,7 @@
                 "question_type": "single",
                 "question_description": "some description text", (optional)
                 "question_text": "Нервозність або внутрішнє тремтіння",
+                "name": "ідентифікатор питання", (optional)
                 "rate_min": 0,
                 "rate_max": 4,
                 "min_rate_description": "Зовсім немає",
@@ -44,6 +45,7 @@
             "question_type": "single",
             "question_description": "some description text", (optional)
             "question_text": "Нервозність або внутрішнє тремтіння",
+            "name": "ідентифікатор питання", (optional)
             "question_option_list": [
                 {
                     "option_text": "Варіант відповіді на запитання",

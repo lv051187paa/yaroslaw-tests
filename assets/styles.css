@@ -109,3 +109,22 @@ table[data-list-type] td:hover .editable + .edit-handler {
 .answer-list__item .card-header {
     padding: 0;
 }
+
+#questions-list .question-name {
+    width: 300px;
+}
+
+#questions-list .question-description {
+    width: 400px;
+}
+
+#questions-list .question-group {
+    max-width: 100px;
+}
+
+#questions-list .options {
+    max-width: 300px;
+}
+#questions-list .actions {
+    max-width: 100px;
+}
